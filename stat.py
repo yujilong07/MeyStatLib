@@ -86,4 +86,24 @@ def stQuantile(x, q):
     i = int(pos // 2)
     f = pos - i
     return sorted_x[i] + f * (sorted_x[i+1] - sorted_x[i])
-print(stQuantile(np.array([1,3,5,7]), 0.5))  # 4.0
+
+def stMode(x):
+    dir = {}
+    for val in x.flat:
+        if val in dir:
+            dir[val] += 1
+        else:
+            dir[val] = 1
+
+    max_count = 0      
+    mode_val = None
+
+    for val,count in dir.items():
+        if count > max_count:
+            max_count = count
+            mode_val = val
+
+    return mode_val
+
+
+
