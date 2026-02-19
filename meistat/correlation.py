@@ -42,3 +42,16 @@ def stCorMatr(x):
         for j in range(p):
             result[i, j] = stCovPirs(x[:, i], x[:, j])
     return result
+
+def stCovMatrix(x, ddof=0):
+    if x.ndim != 2:
+        raise ValueError("Input must be 2-dimensional")
+    
+    p = x.shape[1]
+    result = np.zeros((p, p))
+    
+    for i in range(p):
+        for j in range(p):
+            result[i, j] = stCov(x[:, i], x[:, j], ddof=ddof)
+    
+    return result
