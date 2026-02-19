@@ -1,5 +1,6 @@
 import numpy as np
 from .core import stMean
+from .stat import stQuantile
 
 
 def stDisp(x, ddof=0, axis=None):
@@ -64,5 +65,57 @@ def stRange(x, axis=None):
         if val < min_e: min_e = val
 
     return max_e - min_e
+    # return np.max(x, axis=axis) - np.min(x, axis=axis)
 
+def stIQR(x, axis=None):
+    if axis is None:
+        q1 = stQuantile(x, 0.25)
+        q3 = stQuantile(x, 0.75)
+        return q3 - q1
+    else:
+        return np.percentile(x, 75, axis=axis) - np.percentile(x, 25, axis=axis)
 
+def stCV(x, axis=None):
+    mean = stMean(x, axis=axis)
+    std = stStd(x, ddof=1, axis=axis)
+
+    with np.errstate(divide='ignore', invalid='ignore'):
+        cv = np.abs(std / mean) * 100
+    
+    return cv
+
+def stSEM(x, ddof=0, axis=None):  
+    tetta = stStd(x, ddof, axis=axis)  
+    n = x.shape[axis] if axis is not None else x.size  
+    return tetta / np.sqrt(n)
+
+def stPercentile(x, p, axis=None):
+    if not 0 <= p <= 100:
+        raise ValueError("p must be between 0 and 100")
+    
+    if axis is None:
+        return stQuantile(x, p / 100)
+    else:
+        return np.percentile(x, p, axis=axis)
+
+def stQuartiles(x, axis=None):
+    if axis is None:
+        q1 = stQuantile(x, 0.25)
+        q2 = stQuantile(x, 0.50)
+        q3 = stQuantile(x, 0.75)
+        return q1, q2, q3
+    else:
+        q1 = np.percentile(x, 25, axis=axis)
+        q2 = np.percentile(x, 50, axis=axis)
+        q3 = np.percentile(x, 75, axis=axis)
+        return q1, q2, q3
+    # return [stPercentile(x,25), stPercentile(x,50), stPercentile(x,75]
+
+def stMAD(x, axis=None):
+     median = stMed(x, axis=axis)
+    
+    if axis is not None:
+        median = np.expand_dims(median, axis=axis)
+    
+    abs_dev = np.abs(x - median)
+    return stMed(abs_dev, axis=axis)
