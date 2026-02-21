@@ -1,6 +1,6 @@
 # MeiStat - Statistical Functions Library
 
-A Python library for statistical analysis built on NumPy. Provides 31 statistical functions organized in intuitive modules.
+A Python library for statistical analysis built on NumPy. Provides 33 statistical functions organized in intuitive modules.
 
 ## Installation
 
